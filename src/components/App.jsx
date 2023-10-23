@@ -1,7 +1,7 @@
-import { ContactForm } from './form';
+import { ContactForm } from './form/form';
 import { Filter } from './filter';
 import { Component } from 'react';
-import { ContactList } from './list';
+import { ContactList } from './list/list';
 import { Wrapper } from './wrapper-styled';
 
 export class App extends Component {
@@ -16,42 +16,34 @@ export class App extends Component {
     );
 
     if (isSame) {
-      alert('This name already exist');
-    } else {
-      this.setState(prevState => ({
-        ...prevState,
-        contacts: [...prevState.contacts, newContact],
-      }));
+      return alert('This name already exist');
     }
+
+    this.setState(prevState => ({
+      contacts: [...prevState.contacts, newContact],
+    }));
   };
 
   changeFilter = evt => {
-    this.setState(prevState => ({
-      ...prevState,
+    this.setState({
       filters: evt.target.value,
-    }));
+    });
   };
 
   deleteElementsOfList = contact => {
-    console.log(contact);
+    this.setState({
+      contacts: this.state.contacts.filter(item => item.id !== contact.id),
+    });
+  };
 
-    const newContactList = this.state.contacts.filter(
-      item => item.id !== contact.id
+  getFilteredList = () => {
+    return this.state.contacts.filter(item =>
+      item.name.toLowerCase().includes(this.state.filters.toLowerCase())
     );
-    console.log(newContactList);
-
-    this.setState(prevState => ({
-      ...prevState,
-      contacts: newContactList,
-    }));
   };
 
   render() {
-    console.log(this.state);
-
-    const filteredList = this.state.contacts.filter(item =>
-      item.name.toLowerCase().includes(this.state.filters.toLowerCase())
-    );
+    const filteredList = this.getFilteredList();
 
     return (
       <Wrapper>
